@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import csv
 
 # source = requests.get('https://www.nami.org/Search?searchtext=Latino&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153').text
 
@@ -25,58 +26,62 @@ import requests
 
 # soup = BeautifulSoup(url)
 
-keywords = ['Black', 'Latino', 'Latinx']
+keywords = ['Black', 'Latino', 'Latinx', 'Indigenous',]
 
 # 'toolkit', 'depression','wellness'
 
-for number in range(1,10):
-	for keyword in keywords:
-		url = f'https://www.nami.org/Search?searchtext={keyword}&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153&page={number}'
-		nami_info = requests.get(url).text
+with open('nami_list.csv', newline='', mode='w') as csvfile:
+	fieldnames = ['title', 'summary', 'link']
+	nami_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+	nami_writer.writeheader()
 
-	# print(nami_info.text)
+	for number in range(1,10):
+		for keyword in keywords:
+			url = f'https://www.nami.org/Search?searchtext={keyword}&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153&page={number}'
+			nami_info = requests.get(url).text
 
-		soup = BeautifulSoup(nami_info, 'lxml')
-		titles_list = []
-		summary_list = []
-		url_list = []
+		# print(nami_info.text)
 
-		for resource_title in soup.find_all('div', class_='search-resultsTitle'):
-			title = resource_title.a.text
-			titles_list.append(title)
+			soup = BeautifulSoup(nami_info, 'lxml')
+			titles_list = []
+			summary_list = []
+			url_list = []
 
-			# print(title)
+			for resource_title in soup.find_all('div', class_='search-resultsTitle'):
+				title = resource_title.a.text
+				titles_list.append(title)
 
-		for resource_summary in soup.find_all('div', class_='search-resultsSummary'):
-			summary = resource_summary
-			summary_list.append(summary)
+				# print(title)
 
-			# print(summary)
+			for resource_summary in soup.find_all('div', class_='search-resultsSummary'):
+				summary = resource_summary.text
+				summary_list.append(summary)
 
-		for resource_url in soup.find_all('div', class_='search-resultsRelURL'):
-			link = resource_url.a.get('href')
-			url_list.append(link)
+				# print(summary)
 
-		# loop through each index in the lists (they all have the same length so you can just pick one)
-		# and print every item at that index in each of the lists since they will match up
-		for l in range(len(titles_list)):
-			print(titles_list[l], summary_list[l], url_list[l])
+			for resource_url in soup.find_all('div', class_='search-resultsRelURL'):
+				link = resource_url.a.get('href')
+				url_list.append(link)
 
-			# print(link)
+			# loop through each index in the lists (they all have the same length so you can just pick one)
+			# and print every item at that index in each of the lists since they will match up
+			for l in range(len(titles_list)):
+				# print(titles_list[l], summary_list[l], url_list[l])
 
-
+				nami_writer.writerow({'title': titles_list[l] , 'summary': summary_list[l], 'link': url_list[l]})
 
 		# print(soup.prettify())
 
 
 
+# Rows: 
+
+# Columns: 
+
 
 # div class="search-resultsTitle
-
 # div class="search-resultsSummary
-
 # div class="search-resultsRelURL
-
 # span class="search-resultsURL
 
 
