@@ -1,88 +1,102 @@
+# This line of code imports Beautiful Soup which allows for data to be pulled 
+# from HTML files and allows for easy searching of the data using python code.
 from bs4 import BeautifulSoup
+
+# This line of code allows us to access the response data (content) from the 
+# url link we are looking to search.
 import requests
+
+# This line of code allows us to export the parsed data from our searches
+# in a spreadsheet.
 import csv
 
-# source = requests.get('https://www.nami.org/Search?searchtext=Latino&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153').text
+# Below are keywords that we searched on the nami website. 
+# For 'African American', the %20 signifies a space in the url line
+keywords = ['Black','African%20American', 'Latino', 'Latinx','Latina',
+			'Indigenous']
 
+# The set() method below creates an empty set where unique search results
+# are being placed once the line of code is run
+unique_results = set()
 
-# soup = BeautifulSoup(source, 'lxml')
-
-# print(soup.prettify())
-
-# this line is looping into all class "links-region" tag
-# for topic in soup.find_all('div', class_='links-region'):
-# 	info = topic.ul.find_all('li')
-# 	# print(info)
-# 	for link in info:
-# 		if link.a == None:
-# 			print('No href')
-# 		else:
-# 			title = link.a.get('href')
-# 			print(title)
-
-
-# url = ['https://www.nami.org/Search?searchtext=Latino&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153']
-
-
-# soup = BeautifulSoup(url)
-
-keywords = ['Black', 'Latino', 'Latinx', 'Indigenous',]
-
-# 'toolkit', 'depression','wellness'
-
+# The lines of code below we are accessing a csv file where the unique results
+# above will be housed once the for loop goes through all the search keywords
 with open('nami_list.csv', newline='', mode='w') as csvfile:
 	fieldnames = ['title', 'summary', 'link']
 	nami_writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 	nami_writer.writeheader()
 
+	# Each keyword brings up multiple result pages so the for loop below goes 
+	# through every page of each keyword.
 	for number in range(1,10):
+		#The for loop below is requesting the nami search page and going 
+		# through each of the keywords listed in the keywords list above. 		
 		for keyword in keywords:
+			# This line of code contains the url for the nami search page.
+			# We changed the keywork and the page number using the for loops
+			# above to go through all the results.
 			url = f'https://www.nami.org/Search?searchtext={keyword}&searchmode=allwords&bygroup=&bytopic=&bytype=139-141-142-143-144-145-146-147-149-153&page={number}'
+			# The line of code below requests the nami url in text format 
+			# so that we can read and view the search contents in terminal 
 			nami_info = requests.get(url).text
-
-		# print(nami_info.text)
-
+			# The line of code below takes the url request above and creates
+			# a soup object to parse the data
 			soup = BeautifulSoup(nami_info, 'lxml')
+			
+			# This is an empty list to place the title of each resource
 			titles_list = []
+			# This is an empty list to place the summary of each resource 
 			summary_list = []
+			# This is an empty list to palce the url of each resource
 			url_list = []
-
+			
+			# The for loop below is finding all of the tags in the html code 
+			# with the specific "class" for all the titles. 
 			for resource_title in soup.find_all('div', class_='search-resultsTitle'):
+				# This line defines titles with the specific anchor element
+				# in the div tag where the title exists.
 				title = resource_title.a.text
-				titles_list.append(title)
+				# This line of code takes the title and adds it to the empty 
+				# titles list above and uses the strip function to remove
+				# all of the extra spacing.
+				titles_list.append(title.strip())
 
-				# print(title)
-
+			# The for loop below is finding all of the tags in the html code 
+			# with the specific "class" for all the summaries.
 			for resource_summary in soup.find_all('div', class_='search-resultsSummary'):
+				# This line defines summary with the specific anchor element
+				# in the div tag where the summary exists.
 				summary = resource_summary.text
-				summary_list.append(summary)
+				# This line of code takes the summary and adds it to the empty 
+				# summaries list above and uses the strip function to remove
+				# all of the extra spacing.
+				summary_list.append(summary.strip())
 
-				# print(summary)
-
+			# The for loop below is finding all of the tags in the html code 
+			# with the specific "class" for all the url's.
 			for resource_url in soup.find_all('div', class_='search-resultsRelURL'):
+				# This line defines summary with the specific anchor element
+				# in the div tag where the url exists.
 				link = resource_url.a.get('href')
-				url_list.append(link)
+				# This line of code takes the url and adds it to the empty 
+				# url's list above and uses the strip function to remove
+				# all of the extra spacing.
+				url_list.append(link.strip())
 
-			# loop through each index in the lists (they all have the same length so you can just pick one)
-			# and print every item at that index in each of the lists since they will match up
+			# The line below loops through each index in the lists that were 
+			# created. With each list being the same the same length.
 			for l in range(len(titles_list)):
-				# print(titles_list[l], summary_list[l], url_list[l])
+				# This line of code adds each individual title with the
+				# corresponding summary and url into the unique results empty
+				# set created above.		
+				unique_results.add((titles_list[l], summary_list[l], url_list[l]))		
 
-				nami_writer.writerow({'title': titles_list[l] , 'summary': summary_list[l], 'link': url_list[l]})
+	#This for loop goes through each result in the unique results set
+	for result in unique_results:
+		# The line of code below adds each unique result to the CSV file we 
+		# created to house the results of the webscraping	
+		nami_writer.writerow({'title': result[0] , 'summary': result[1], 'link': result[2]})
 
-		# print(soup.prettify())
-
-
-
-# Rows: 
-
-# Columns: 
-
-
-# div class="search-resultsTitle
-# div class="search-resultsSummary
-# div class="search-resultsRelURL
-# span class="search-resultsURL
 
 
 	
