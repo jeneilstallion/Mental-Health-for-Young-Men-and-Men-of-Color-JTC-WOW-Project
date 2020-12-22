@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 # This line of code allows us to access the response data (content) from the 
 # url link we are looking to search.
-import requests
+from requests
 
 # This line of code allows us to export the parsed data from our searches
 # in a spreadsheet.
