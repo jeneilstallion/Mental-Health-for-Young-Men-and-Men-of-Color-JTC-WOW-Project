@@ -39,8 +39,6 @@ def get_link_info(title):
 			print(child)
 			for e in soup.findAll('br'):
 				e.extract()
-				# for div in soup.findAll("div", id='tagline'): 
-				# 	div.decompose()
 		link_info = {'Link': url , 'Desription':link.text}
 		data.append(link_info)
 	return data
@@ -91,7 +89,7 @@ get_healthcare_info('Get Immediate Help in a Crisis')
 
 # print('')
 
-get_link_info('Get Immediate Help in a Crisis')
+
 
 Headers = ['Link', 'Desription']
 
@@ -111,6 +109,9 @@ try:
 
 except IOError:
     print("I/O error")
+
+
+
 
 
 
