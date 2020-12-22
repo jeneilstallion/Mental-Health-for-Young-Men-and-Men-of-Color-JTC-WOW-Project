@@ -50,9 +50,9 @@ def get_link_info(title):
 			print(child)
 			for e in soup.findAll('br'):
 				e.extract()
-				for div in soup.findAll("div", id='tagline'): 
-					div.decompose()
-		link_info = {'Link': url , 'Desription':link.text , 'Number':link.text, 'Summary':link.text}
+				# for div in soup.findAll("div", id='tagline'): 
+				# 	div.decompose()
+		link_info = {'Link': url , 'Desription':link.text}
 		data.append(link_info)
 	return data
 
@@ -67,7 +67,7 @@ def get_healthcare_info(title):
 		else: 
 			url = f"{nimh_domain}{link['href']}"
 		print(link.text)
-		link_info = {'Link': url , 'Desription':link.text , 'Number':link.text, 'Summary':link.text}
+		link_info = {'Link': url , 'Desription':link.text}
 		healthcare_data.append(link_info)
 	return healthcare_data
 		
@@ -95,60 +95,34 @@ def get_healthcare_info(title):
 #       print(f"{nimh_domain}{link['href']}")
 
 get_link_info('Get Immediate Help in a Crisis')
-# get_healthcare_info('Get Immediate Help in a Crisis')
+get_healthcare_info('Get Immediate Help in a Crisis')
 
 
 
 
 # print('')
 
-# get_link_info('Get Immediate Help in a Crisis')
+get_link_info('Get Immediate Help in a Crisis')
 
-# Headers = ['Link', 'Desription', 'Number', 'Summary']
+Headers = ['Link', 'Desription']
 
-# dict_data = get_link_info('Get Immediate Help in a Crisis',)
-# healthcare_data = get_healthcare_info('Find a Health Care Provider or Treatment')
+dict_data = get_link_info('Get Immediate Help in a Crisis',)
+healthcare_data = get_healthcare_info('Find a Health Care Provider or Treatment')
 
-# NIMH_data = dict_data + healthcare_data 
+NIMH_data = dict_data + healthcare_data 
 
-# csv_file = "NIMH_data_new.csv"
-# try:
-#     with open(csv_file, 'w') as csvfile:
-#         writer = csv.DictWriter(csvfile, fieldnames=Headers)
-#         writer.writeheader()
-#         for data in NIMH_data:
-#             writer.writerow(data)
-#     print('csv complete')
+csv_file = "NIMH_data_final.csv"
+try:
+    with open(csv_file, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=Headers)
+        writer.writeheader()
+        for data in NIMH_data:
+            writer.writerow(data)
+    print('csv complete')
 
-# except IOError:
-#     print("I/O error")
+except IOError:
+    print("I/O error")
 
-# print(urls)
-
-# print(a_tag)
-
-# soup.find('div', {'class': 'field-content'})
-
-# for number in range(1,10):
-# 	for keyword in keywords:
-# 		url = f'https://www.nimh.nih.gov/health/find-help/index.shtml#part_150431'
-# 		nami_info = requests.get(url).text
-
-# for resource_title in soup.find_all('div', class_='titleblock__title'):
-# 			title = resource_title.a.text
-# 			titles_list.append(title)
-
-			# print(title)
-
-		# for resource_summary in soup.find_all('div', class_='search-resultsSummary'):
-		# 	summary = resource_summary
-		# 	summary_list.append(summary)
-
-		# 	# print(summary)
-
-		# for resource_url in soup.find_all('div', class_='search-resultsRelURL'):
-		# 	link = resource_url.a.get('href')
-		# 	url_list.append(link)
 
 
 
