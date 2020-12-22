@@ -12,22 +12,11 @@ response = requests.get(url)
 source = response.content
 # print(source)
 
-soup = BeautifulSoup(source, 'lxml')
-#create soup object to parse
-links = soup.find_all('a')
-# print(links)
-div_tag = soup.find_all('div')
-# print(div_tag)
-match = soup.find_all('p')
-# print(match)
 
-resouces = soup.find_all('$0', )
-
-
-for divs in div_tag:
-	for links in divs.find_all('a'[0]):
-		match = soup.a.text
-		# print(links)
+# for divs in div_tag:
+# 	for links in divs.find_all('a'[0]):
+# 		match = soup.a.text
+# 		# print(links)
 
 
 soup = BeautifulSoup(response.text, 'html.parser')
